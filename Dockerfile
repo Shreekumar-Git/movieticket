@@ -1,26 +1,26 @@
-# ========================================
-# 1️⃣ BUILD STAGE (Maven + OpenJDK 25)
-# ========================================
-FROM maven:3.9.6-eclipse-temurin-25 AS build
+# Run this project with java 21
+
+# ---------- Stage 1: Build ----------
+FROM maven:3.9.9-eclipse-temurin-21 AS build
 WORKDIR /app
 
-# Copy pom.xml first (cache dependencies)
+# Copy pom.xml and download dependencies (cached)
 COPY pom.xml .
-RUN mvn -q dependency:go-offline
+RUN mvn dependency:go-offline
 
-# Copy source code & build
+# Copy the rest of the source code and build the JAR
 COPY src ./src
-RUN mvn -q clean package -DskipTests
+RUN mvn clean package -DskipTests
 
-# ========================================
-# 2️⃣ RUNTIME STAGE (Small OpenJDK 25 JRE)
-# ========================================
-FROM eclipse-temurin:25-jdk-alpine
-
+# ---------- Stage 2: Run ----------
+FROM openjdk:21-jdk-slim
 WORKDIR /app
 
+# Copy only the built JAR from the build stage
 COPY --from=build /app/target/*.jar app.jar
 
+# Expose Render's port
 EXPOSE 8080
 
-ENTRYPOINT ["java", "--enable-preview", "-jar", "app.jar"]
+# Run the Spring Boot application
+ENTRYPOINT ["java", "-jar", "app.jar"]
