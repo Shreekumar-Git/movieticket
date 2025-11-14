@@ -1,0 +1,14 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Spring Boot-MovieticketApplication<movieticket>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.movieticket.MovieticketApplication",
+      "projectName": "movieticket",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
+}

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin Dashboard</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand" href="/">Home</a>
+        <a class="btn btn-outline-light" href="/admin/dashboard"
+          >Admin Dashboard</a
+        >
+      </div>
+      <!-- username and role display -->
+      <li class="nav-item d-flex align-items-center">
+        <div class="ms-auto d-flex align-items-center text-white small">
+          <span th:if="${currentUserEmail != null}">
+            <span th:text="${currentUserEmail}"></span>
+            (<span
+              th:text="${#strings.capitalize(currentUserRole.toLowerCase())}"
+            ></span
+            >)
+          </span>
+        </div>
+      </li>
+    </nav>
+
+    <div class="container mt-4">
+      <h2>🎬 Manage Movies</h2>
+      <form method="post" th:action="@{/admin/movies/add}" class="row g-2 mb-4">
+        <div class="col-md-3">
+          <input
+            class="form-control"
+            name="title"
+            placeholder="Title"
+            required
+          />
+        </div>
+        <div class="col-md-2">
+          <input class="form-control" name="genre" placeholder="Genre" />
+        </div>
+        <div class="col-md-2">
+          <input
+            class="form-control"
+            name="durationMinutes"
+            placeholder="Duration"
+            type="number"
+          />
+        </div>
+        <div class="col-md-2">
+          <input class="form-control" name="rating" placeholder="Rating" />
+        </div>
+        <div class="col-md-3">
+          <input
+            class="form-control"
+            name="posterUrl"
+            placeholder="Poster URL"
+          />
+        </div>
+        <div class="col-12">
+          <button class="btn btn-success">Add Movie</button>
+        </div>
+      </form>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Genre</th>
+            <th>Duration</th>
+            <th>Rating</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="m : ${movies}">
+            <td th:text="${m.title}"></td>
+            <td th:text="${m.genre}"></td>
+            <td th:text="${m.durationMinutes}"></td>
+            <td th:text="${m.rating}"></td>
+            <td>
+              <form
+                method="post"
+                th:action="@{'/admin/movies/delete/' + ${m.id}}"
+                style="display: inline"
+              >
+                <button class="btn btn-sm btn-danger">Delete</button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <hr />
+      <h2>🏢 Manage Theatres</h2>
+      <form
+        method="post"
+        th:action="@{/admin/theatres/add}"
+        class="row g-2 mb-4"
+      >
+        <div class="col-md-4">
+          <input
+            class="form-control"
+            name="name"
+            placeholder="Theatre Name"
+            required
+          />
+        </div>
+        <div class="col-md-4">
+          <input class="form-control" name="location" placeholder="Location" />
+        </div>
+        <div class="col-md-2">
+          <input
+            class="form-control"
+            name="seatCount"
+            type="number"
+            placeholder="Seats"
+          />
+        </div>
+        <div class="col-12">
+          <button class="btn btn-success">Add Theatre</button>
+        </div>
+      </form>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Seats</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="t : ${theatres}">
+            <td th:text="${t.name}"></td>
+            <td th:text="${t.location}"></td>
+            <td th:text="${t.seatCount}"></td>
+            <td>
+              <form
+                method="post"
+                th:action="@{'/admin/theatres/delete/' + ${t.id}}"
+                style="display: inline"
+              >
+                <button class="btn btn-sm btn-danger">Delete</button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <hr />
+      <h2>⏰ Manage Shows</h2>
+      <form method="post" th:action="@{/admin/shows/add}" class="row g-2 mb-4">
+        <div class="col-md-3">
+          <label>Movie</label>
+          <select class="form-select" name="movieId" required>
+            <option value="">Select Movie</option>
+            <option
+              th:each="m : ${movies}"
+              th:value="${m.id}"
+              th:text="${m.title}"
+            ></option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label>Theatre</label>
+          <select class="form-select" name="theatreId" required>
+            <option value="">Select Theatre</option>
+            <option
+              th:each="t : ${theatres}"
+              th:value="${t.id}"
+              th:text="${t.name}"
+            ></option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label>Start Time</label>
+          <input
+            type="datetime-local"
+            class="form-control"
+            name="startTime"
+            required
+          />
+        </div>
+        <div class="col-md-2">
+          <label>Price</label>
+          <input
+            class="form-control"
+            name="pricePerSeat"
+            type="number"
+            placeholder="₹"
+            required
+          />
+        </div>
+        <div class="col-12">
+          <button class="btn btn-success">Add Show</button>
+        </div>
+      </form>
+      <!-- ✅ Add this show list table -->
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Movie</th>
+            <th>Theatre</th>
+            <th>Start Time</th>
+            <th>Price</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="s : ${shows}">
+            <td th:text="${s.movie.title}"></td>
+            <td th:text="${s.theatre.name}"></td>
+            <td
+              th:text="${#temporals.format(s.startTime, 'dd MMM yyyy, HH:mm')}"
+            ></td>
+            <td th:text="${s.pricePerSeat}"></td>
+            <td>
+              <form
+                method="post"
+                th:action="@{'/admin/shows/delete/' + ${s.id}}"
+                style="display: inline"
+              >
+                <button class="btn btn-danger btn-sm">Delete</button>
+                <div
+                  th:if="${error}"
+                  class="alert alert-danger mt-3"
+                  th:text="${error}"
+                ></div>
+                <div
+                  th:if="${success}"
+                  class="alert alert-success mt-3"
+                  th:text="${success}"
+                ></div>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

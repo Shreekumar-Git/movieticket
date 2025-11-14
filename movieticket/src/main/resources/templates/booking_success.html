@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MovieTix</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+      <div class="container">
+        <a class="navbar-brand" th:href="@{/}">MovieTix</a>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" th:href="@{/}">Home</a></li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/admin/dashboard}">Admin</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/swagger-ui.html}">Swagger</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/login}">Login</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <div class="container">
+      <div>
+        <section class="text-center">
+          <h2>Booking Successful 🎉</h2>
+          <p>Below is your receipt.</p>
+          <div class="card mx-auto" style="max-width: 600px">
+            <div class="card-body">
+              <p><b>Booking ID:</b> <span th:text="${booking.id}">-</span></p>
+              <p>
+                <b>Movie:</b>
+                <span th:text="${booking.show.movie.title}">-</span>
+              </p>
+              <p>
+                <b>Theatre:</b>
+                <span th:text="${booking.show.theatre.name}">-</span>
+              </p>
+              <p>
+                <b>Showtime:</b>
+                <span
+                  th:text="${#temporals.format(booking.show.startTime, 'dd MMM yyyy, HH:mm')}"
+                ></span>
+              </p>
+              <p>
+                <b>Seat Number:</b>
+                <span th:text="${booking.seatNumbers}"></span>
+              </p>
+              <p>
+                <b>Total Paid:</b> ₹<span
+                  th:text="${booking.totalAmount}"
+                ></span>
+              </p>
+              <p>
+                <b>Status:</b> <span th:text="${booking.status}"></span> /
+                <span th:text="${booking.paymentStatus}"></span>
+              </p>
+            </div>
+          </div>
+          <a th:href="@{/}" class="btn btn-primary mt-3">Back to Home</a>
+        </section>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
